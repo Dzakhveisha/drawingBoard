@@ -1,5 +1,8 @@
-const board_canvas = document.getElementById("board");  // поиск нужного канваса
-const ctx = board_canvas.getContext("2d");  // присваиваем контекст
+const canvas = document.getElementById("board");  // поиск нужного канваса
+const ctx = canvas.getContext("2d");  // присваиваем контекст
+
+let shapesArray = [];
+let tempElement;
 
 class Shape {                      // общий класс какой-либо фигуры
     constructor(x1,y1, x2, y2) {
@@ -20,12 +23,16 @@ class Rectangle extends Shape{  //прямоугольник, наследующ
         if (this.y1 < this.y2) {
             highY = this.y1
         }
-            else highY =this.y2;
+            else {
+            highY = this.y2;
+        }
         if (this.x1 < this.x2) {
             leftX = this.x1
         }
-            else leftX =this.x2;
-        ctx.fillRect(leftX, highY, Math.abs(tempElement.x2 - tempElement.x1), Math.abs(tempElement.y2 - tempElement.y1));
+        else{
+            leftX = this.x2;
+        }
+        ctx.fillRect(leftX, highY, Math.abs(this.x2 - this.x1), Math.abs(this.y2 - this.y1));
     }
 }
 
@@ -39,29 +46,24 @@ function repaintBoard(){   // функция перерисовки доски
     }
 }
 
-let shapesArray = [];
-let tempElement;
 
-board_canvas.addEventListener("mousedown", ev => {
-    tempElement = new Rectangle(ev.clientX,ev.clientY, ev.clientX, ev.clientY);
+canvas.addEventListener("mousedown", ev => {
+    tempElement = new Rectangle(ev.pageX - canvas.offsetLeft,ev.pageY - canvas.offsetTop, ev.pageX - canvas.offsetLeft, ev.pageY - canvas.offsetTop);
 })
 
-board_canvas.addEventListener("mousemove", ev => {
+canvas.addEventListener("mousemove", ev => {
     if (tempElement != null) {
-        tempElement.x2 = ev.clientX;
-        tempElement.y2 = ev.clientY;
+        tempElement.x2 = ev.pageX - canvas.offsetLeft;
+        tempElement.y2 = ev.pageY - canvas.offsetTop;
         repaintBoard();
     }
 })
 
-board_canvas.addEventListener("mouseup", ev => {
-    tempElement.x2 = ev.clientX;
-    tempElement.y2 = ev.clientY;
+canvas.addEventListener("mouseup", ev => {
+    tempElement.x2 = ev.pageX - canvas.offsetLeft;
+    tempElement.y2 = ev.pageY - canvas.offsetTop;
 
-    let clone = JSON.parse(JSON.stringify(tempElement));
-    clone = Object.assign(clone, tempElement)
-
-    shapesArray.push(clone);
+    shapesArray.push(tempElement);
     tempElement = null;
     repaintBoard();
 })
