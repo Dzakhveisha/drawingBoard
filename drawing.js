@@ -7,136 +7,8 @@ let tempElement;
 
 let colorWell;
 let curColor = "#000000";
+
 window.addEventListener("load", startup, false);
-
-const sendBtn = document.querySelector('#send');
-const messages = document.querySelector('#messages');
-const messageBox = document.querySelector('#messageBox');
-let ws;
-
-
-//////////////////////////////////////////////chat//////////////////////////////////////////////////////////////////////
-function showMessage(message) {
-    let div = document.createElement('div');
-    div.className = "sms notMy";
-    let p = document.createElement('p');
-    p.className = "smsContent";
-    p.innerHTML = `${message}`;
-    div.appendChild(p);
-    messages.append(div);
-    messages.scrollTop = messages.scrollHeight;
-    messageBox.value = '';
-}
-
-function showMyMessage(message) {
-    let div = document.createElement('div');
-    div.className = "sms my";
-    let p = document.createElement('p');
-    p.className = "smsContent";
-    p.innerHTML = `${message}`;
-    div.appendChild(p);
-    messages.append(div);
-    messages.scrollTop = messages.scrollHeight;
-    messageBox.value = '';
-}
-
-function init() {
-    if (ws) {
-        ws.onerror = ws.onopen = ws.onclose = null;
-        ws.close();
-    }
-    ws = new WebSocket('ws://localhost:6969');
-    ws.onopen = () => {
-        console.log('Connection opened!');
-    }
-    ws.onmessage = ({ data }) => {
-        let dataType = data.slice(0, data.indexOf('.') + 1);  //определяем тип данных
-        data = data.slice(data.indexOf('.') + 1);
-
-        if (dataType === "sms."){
-            showMessage(data);     // сообщение в чат
-        } else {
-            let color = data.slice(0, data.indexOf('.'));  // выделение цвета
-            data = data.slice(data.indexOf('.') + 1);
-
-            switch (dataType) {
-                case "rectangle.": {
-                    let x1 = parseInt(data.slice(0, data.indexOf('.')));  // выделение координат
-                    data = data.slice(data.indexOf('.') + 1);
-                    let y1 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-                    let x2 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-                    let y2 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-
-                    shapesArray.push(new Rectangle(x1, y1, x2, y2, color));
-                    }
-                    break;
-                case "circle.": {
-                    let x1 = parseInt(data.slice(0, data.indexOf('.')));  // выделение координат
-                    data = data.slice(data.indexOf('.') + 1);
-                    let y1 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-                    let x2 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-                    let y2 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-
-                    shapesArray.push(new Circle(x1, y1, x2, y2, color));
-                    }
-                    break;
-                case "line.":
-                    let x1 = parseInt(data.slice(0, data.indexOf('.')));  // выделение координат
-                    data = data.slice(data.indexOf('.') + 1);
-                    let y1 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-                    let x2 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-                    let y2 = parseInt(data.slice(0, data.indexOf('.')));
-                    data = data.slice(data.indexOf('.') + 1);
-
-                    shapesArray.push(new Line(x1, y1, x2, y2, color));
-                    break;
-                case "lineByPen.": {
-                    let x = parseInt(data.slice(0, data.indexOf('.')));  // выделение координат
-                    data = data.slice(data.indexOf('.') + 1);
-                    let y = parseInt(data.slice(0, data.indexOf('.')));  // выделение координат
-                    data = data.slice(data.indexOf('.') + 1);
-                    let tmpLine = new LineByPen(x,y,color);
-                    while (data.length !== 0) {
-                          let x = parseInt(data.slice(0, data.indexOf('.')));  // выделение координат
-                          data = data.slice(data.indexOf('.') + 1);
-                          let y = parseInt(data.slice(0, data.indexOf('.')));  // выделение координат
-                          data = data.slice(data.indexOf('.') + 1);
-                          tmpLine.addPoint(x,y);
-                        }
-                      shapesArray.push(tmpLine);
-                     }
-                    break;
-            }
-        }
-    };
-    ws.onclose = function() {
-        ws = null;
-    }
-}
-
-document.getElementById('forSend').onsubmit = function(evt) {
-    evt.preventDefault();  // отмена автоматической отправки формы
-};
-function sendMSG() {
-    if (!ws) {
-        alert("No WebSocket connection :(");
-        return ;
-    }
-    ws.send("sms." + messageBox.value);
-    showMyMessage(messageBox.value);
-}
-init();
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 function startup() {
     colorWell = document.querySelector("#colorPick");
     colorWell.addEventListener("input", updateFirst, false);
@@ -146,7 +18,7 @@ function updateFirst(event) {
     curColor = event.target.value;
 }
 
-class Shape {                      // общий класс какой-либо фигуры
+class Shape {     // общий класс какой-либо фигуры
     constructor(x1,y1, x2, y2, color) {
         this.x1 = x1;
         this.y1 = y1;
@@ -214,7 +86,7 @@ class Line extends Shape{  //прямая, наследующийся от Shape
     }
 }
 
-class  LineByPen{
+class  LineByPen{      // линия из точек
     constructor(x, y, color) {
         this.pointsArray = new Array();
         this.pointsArray.push(x);
@@ -260,7 +132,7 @@ function repaintBoard() {
 window.requestAnimationFrame(repaintBoard);
 
 
-function drawRectangle(){
+function drawRectangle(){          //выбор текущей рисуемой фигуры
     shapeType = "rectangle"
 }
 function drawCircle(){

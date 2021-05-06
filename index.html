@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>online BOARD</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id = "drawBoard">
+        <div id ="controls" >
+            <input  type="color" id="colorPick" value="#000000">
+            <button onclick = "drawByPen()" > <img src="img/pen.png"> </button>
+            <button onclick = "drawRectangle()"> <img src="img/rect.png"> </button>
+            <button onclick = "drawCircle()"> <img src="img/ellips.png"></button>
+            <button onclick = "drawLine()"> <img src="img/line.png"> </button>
+            <button onclick = "drawText()"> <img src="img/text.png"> </button>
+            <button onclick = "drawImage()"> <img src="img/image.png"> </button>
+        </div>
+        <canvas id="board" width="1200px" height="700px"> </canvas>
+    </div>
+
+    <div id="chat">
+        <h1> chat </h1>
+        <pre id="messages" ></pre>
+
+        <form id="forSend" method="post">
+              <input type="text" id="messageBox" placeholder="Type your message here"/>
+              <button type="submit" id="send" onclick="sendMSG()" title="Send Message!"> <img src="img/send2.png" height="30" width="30"> </button>
+        </form>
+    </div>
+
+    <script src="startInit.js"></script>
+    <script src="drawing.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>
