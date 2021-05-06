@@ -1,0 +1,163 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    color: black;
+    font-weight: 800;
+}
+body{
+    background-color: aliceblue;
+    display: flex;
+    justify-content: space-around;
+}
+
+#controls{
+    height: 50px;
+    margin: 0px 10px;
+}
+
+#controls button, #controls input{
+    background-color: white;
+    margin: 5px 5px;
+    vertical-align: center;
+    display: inline-block;
+    position: relative;
+    padding: 0 5px;
+    text-decoration: none;
+    width: 80px;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 45px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 3px;
+    font-weight: 600;
+    color: #524f4e;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, .1);
+    transition: .3s;
+}
+#controls button:hover,  #controls input:hover{
+    background: #ffffe3;
+    box-shadow: 0 5px 15px #ffff24;
+    transform: translateY(7px);
+}
+#controls button:active {
+    background: #f8fc9a; /* при нажатии */
+}
+button:active, button:focus, input:active, input:focus {
+    outline: none;
+}
+button::-moz-focus-inner {
+    border: 0;
+}
+
+#controls button img{
+    height: 40px;
+    width: 40px;
+}
+
+#board {
+    float: left;
+    background-color: white;
+}
+
+#chat {
+    width: 290px;
+}
+
+#chat h1{
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+#chat #forSend{
+    display: flex;
+}
+
+#chat #messageBox{
+    padding: 7px;
+    width: 73%;
+}
+
+#chat #send{
+    width: 15%;
+    text-align: center;
+    user-select: none; /* убирать выделение текста */
+    background: white; /* фон кнопки */
+    outline: none; /* убирать контур в Mozilla */
+}
+#chat #send:hover{
+    background: #ffffe3;
+}
+
+#chat #send:active {
+    background: #f8fc9a; /* при нажатии */
+}
+
+
+#messages{
+    padding-left: 10px;
+    height: 50%;
+    overflow: scroll;
+    background-color: white;
+    margin-bottom: 15px;
+}
+#messages .sms{
+    width: 200px;
+    padding: 10px;
+    margin: 10px 10px 10px 20px;
+    position: relative;
+
+    height: 20px;
+    text-align: left;
+    border-radius: 10px;
+}
+#messages .my{
+    background: #b3f0ff;
+}
+#messages .notMy{
+    background: #f8fc9a;
+}
+#messages .notMy:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 15px solid #f8fc9a;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    top: 0;
+    left: -15px;
+}
+#messages .my:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-bottom: 15px solid  #b3f0ff;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    bottom: 0;
+    right: -15px;
+}
+
+#messages .my:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-bottom: 17px solid  #f8fc9a;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    bottom: -1px;
+    right: -17px;
+}
+
+#messages .smsContent {
+    width: 200px;
+
+}
