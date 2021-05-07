@@ -5,7 +5,8 @@
     <title>online BOARD</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/dialogStyle.css">
 </head>
 <body>
 
@@ -26,14 +27,48 @@
         <h1> chat </h1>
         <pre id="messages" ></pre>
 
-        <form id="forSend" method="post">
+        <form id="forSend">
               <input type="text" id="messageBox" placeholder="Type your message here"/>
               <button type="submit" id="send" onclick="sendMSG()" title="Send Message!"> <img src="img/send2.png" height="30" width="30"> </button>
         </form>
     </div>
 
+    <dialog id="modalForInit">
+        <div class="dialogContent">
+        <p>Welcome to the site for online classes OnlineBoard</p>
+        <form id="getName">
+            <input type="text" id="nameInput" placeholder="Type your name"/>
+            <button type="submit" id="setName"> OK </button>
+        </form>
+        </div>
+    </dialog>
+
+    <dialog id="modalForText">
+        <div class="dialogContent">
+            <p>Enter the text</p>
+            <form id="getText">
+                <input type="text" id="textInput" placeholder="Type text here"/>
+                <button type="submit" id="setText"> OK </button>
+                <button type="button" id="cancelText"> close </button>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog id="modalForImage">
+        <div class="dialogContent">
+            <p>Choose the image from your computer:</p>
+            <form id="getImage">
+                <input id = "imageInput" type="file"/>
+                <div id = "prev"> </div>
+                <button type="submit" id="setImage"> OK </button>
+                <button type="button" id="cancelImage"> close </button>
+            </form>
+        </div>
+    </dialog>
+
+    <script src="chat.js"></script>
     <script src="startInit.js"></script>
     <script src="drawing.js"></script>
-    <script src="chat.js"></script>
+
 </body>
 </html>
