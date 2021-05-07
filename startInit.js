@@ -47,22 +47,29 @@ document.querySelector('#cancelText').onclick = function () {
 
 
 document.querySelector('#setImage').onclick = function (e) {
-    var img = new Image;
-    img.onload = function() {
-        imgObj = new MyImg(img, imgX,imgY);
-        shapesArray.push(imgObj);
+    let file = document.getElementById("imageInput").files[0];
+    let img = new Image;
+    let  reader = new FileReader();
 
+    img.onload = function() {
+        let imgObj = new MyImg(img, imgX,imgY);
+        shapesArray.push(imgObj);
+    }
+    img.src = URL.createObjectURL(file);
+
+    reader.onload = function(event) {
+        let data = event.target.result.replace("data:" + file.type + ";base64,", '');
         if (!ws) {
             alert("No WebSocket connection :(");
         } else {
-
-            ws.send("img." + img);
+            ws.send(JSON.stringify({type: "image", x: imgX,  y: imgY, img: data}));
         }
     }
-    img.src = URL.createObjectURL(document.getElementById("imageInput").files[0]);
+    reader.readAsDataURL(file);
 
     document.getElementById("modalForImage").close();
 };
+
 document.querySelector('#cancelImage').onclick = function () {
     document.getElementById("modalForImage").close();
 };

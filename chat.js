@@ -102,8 +102,10 @@ function initWS() {
                 shapesArray.push(new MyText(dataAr["text"], parseInt(dataAr["x"]), parseInt(dataAr["y"]), dataAr["color"]));
                 break;
             case "image": {
-                let img = new Image();
-                img = data;
+                let image = new Image();
+                image.src = "data:image/png;base64," + dataAr["img"];
+                shapesArray.push(new MyImg(image,dataAr["x"],dataAr["y"]));
+
             }
                 break;
         }
