@@ -11,11 +11,7 @@ let members = [];
 
 wss.on('connection', function connection(wsClient) {
     idCounter++;
-    let isFirst = false;
-    if (members.length === 0){
-        isFirst = true;
-    }
-    wsClient.send(JSON.stringify({type: 'newId', id: idCounter, isFirst: isFirst}));
+    wsClient.send(JSON.stringify({type: 'newId', id: idCounter, members: members}));
     members.push(idCounter);
     wsClient.on('message', function incoming(data) {
         let dataAr = JSON.parse(data);
