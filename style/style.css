@@ -17,7 +17,16 @@ button{
 body{
     background-color: aliceblue;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+}
+
+#audio{
+    margin-top: 30px;
+    text-align: center;
+}
+#audio #start-call{
+    padding: 3px;
+    border: solid;
 }
 
 #controls{
@@ -74,6 +83,7 @@ button::-moz-focus-inner {
 
 #chat {
     width: 290px;
+    margin-left: 10px;
 }
 
 #chat h1{
@@ -110,7 +120,7 @@ button::-moz-focus-inner {
 
 #messages{
     padding-left: 10px;
-    height: 50%;
+    height: 500px;
     overflow: scroll;
     background-color: white;
     margin-bottom: 15px;
