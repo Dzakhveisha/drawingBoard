@@ -1,21 +1,21 @@
+import * as connect from './socketConnection.js';
+import * as init from './startInit.js';
+
 const messages = document.querySelector('#messages');
 const messageBox = document.querySelector('#messageBox');
-let ws;
+
 let id;
-let isFirst;
 
 document.getElementById('forSend').onsubmit = function (evt) {
     evt.preventDefault();  // отмена автоматической отправки формы
 };
-initWS(); //инициализация веб-сокетов
+initSocket(); //инициализация веб-сокетов
 
-
-function sendMSG() {
-    if (!ws) {
-        alert("No WebSocket connection :(");
-        return;
-    }
-    ws.send(JSON.stringify({type: "sms", sender: NAME, text: messageBox.value}));
+document.getElementById("send").onclick = function (evt) {
+    sendMSG();
+}
+export function sendMSG() {
+    connect.socket.emit('sms', JSON.stringify({type: "sms", sender: init.NAME, text: messageBox.value}));
     showMyMessage(messageBox.value);
 }
 
@@ -55,20 +55,26 @@ function showMessageAbout(message, str) {
     messageBox.value = '';
 }
 
-function initWS() {
-    if (ws) {
-        ws.onerror = ws.onopen = ws.onclose = null;
-        ws.close();
-    }
-    ws = new WebSocket('ws://localhost:6969');
-    ws.onopen = () => {
-        console.log('Connection opened!');
-    }
-    ws.onmessage = ({data}) => {
+function initSocket() {
+    connect.socket.on('sms', (data) => {
         let dataAr = JSON.parse(data);
-        let dataType = dataAr["type"];  //определяем тип данных
+        showMessage(dataAr["sender"] + ": " + dataAr["text"]);
+    });
+    connect.socket.on('new', (data) => {
+        let dataAr = JSON.parse(data);
+        showMessageAbout(dataAr["name"], " joined.");
+    });
+    connect.socket.on('newId', (data) => {
+        let dataAr = JSON.parse(data);
+        id = dataAr["id"];
+    });
+    connect.socket.on('exit', (data) => {
+        let dataAr = JSON.parse(data);
+        showMessageAbout(dataAr["name"], " left site.");
+    });
 
-        switch (dataType) {
+
+        /* switch (dataType) {
             case "sms":
                 showMessage(dataAr["sender"] + ": " + dataAr["text"]);
                 break;
@@ -124,6 +130,6 @@ function initWS() {
     };
     ws.onclose = function () {
         ws = null;
-    }
+    }*/
 
 }

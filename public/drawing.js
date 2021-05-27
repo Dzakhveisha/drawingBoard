@@ -1,18 +1,20 @@
+import * as connect from './socketConnection.js';
+
 const canvas = document.getElementById("board");  // поиск нужного канваса
 const ctx = canvas.getContext("2d");  // присваиваем контекст
 ctx.font = "30px Verdana";
-let textX;
-let textY;
-let imgX;
-let imgY;
+export let textX;
+export let textY;
+export let imgX;
+export let imgY;
 
 
 let shapeType = "lineByPen";
-let shapesArray = [];
+export let shapesArray = [];
 let tempElement;
 
 let colorWell;
-let curColor = "#000000";
+export let curColor = "#000000";
 
 window.addEventListener("load", startup, false);
 
@@ -39,7 +41,7 @@ class Shape {     // общий класс какой-либо фигуры
     }
 }
 
-class MyText {
+export class MyText {
     constructor(text, x, y, color) {
         this.x = x;
         this.y = y;
@@ -54,7 +56,7 @@ class MyText {
     }
 }
 
-class MyImg {
+export class MyImg {
     constructor(img, x, y) {
         this.x = x;
         this.y = y;
@@ -173,28 +175,27 @@ function repaintBoard() {
 
 window.requestAnimationFrame(repaintBoard);
 
-
-function drawRectangle() {          //выбор текущей рисуемой фигуры
+document.querySelector('#drawRectangle').onclick = function () {         //выбор текущей рисуемой фигуры
     shapeType = "rectangle"
 }
 
-function drawCircle() {
+document.querySelector('#drawCircle').onclick = function () {
     shapeType = "circle"
 }
 
-function drawLine() {
+document.querySelector('#drawLine').onclick = function () {
     shapeType = "line"
 }
 
-function drawByPen() {
+document.querySelector('#drawByPen').onclick = function () {
     shapeType = "lineByPen"
 }
 
-function drawText() {
+document.querySelector('#drawText').onclick = function () {
     shapeType = "text"
 }
 
-function drawImage() {
+document.querySelector('#drawImage').onclick = function () {
     shapeType = "image"
 }
 
@@ -247,13 +248,57 @@ canvas.addEventListener("mouseup", ev => {
         }
         shapesArray.push(tempElement);
 
-        if (!ws) {
-            alert("No WebSocket connection :(");
-        } else {
-            let data = JSON.stringify(tempElement);
-            ws.send(data);
-        }
-
-        tempElement = null;
+        let data = JSON.stringify(tempElement);
+            switch (shapeType) {
+                case "rectangle":
+                    connect.socket.emit("rectangle", data);
+                    break;
+                case "circle":
+                    connect.socket.emit("circle", data);
+                    break;
+                case "line":
+                    connect.socket.emit("line", data);
+                    break;
+                case "lineByPen":
+                    connect.socket.emit("lineByPen", data);
+                    break;
     }
+
+    tempElement = null;
+}
+})
+
+connect.socket.on('rectangle', (data) => {
+    let dataAr = JSON.parse(data);
+    shapesArray.push(new Rectangle(parseInt(dataAr["x1"]), parseInt(dataAr["y1"]), parseInt(dataAr["x2"]),
+        parseInt(dataAr["y2"]), dataAr["color"]));
+});
+connect.socket.on('circle', (data) => {
+    let dataAr = JSON.parse(data);
+    shapesArray.push(new Circle(parseInt(dataAr["x1"]), parseInt(dataAr["y1"]), parseInt(dataAr["x2"]),
+        parseInt(dataAr["y2"]), dataAr["color"]));
+});
+connect.socket.on('line', (data) => {
+    let dataAr = JSON.parse(data);
+    shapesArray.push(new Line(parseInt(dataAr["x1"]), parseInt(dataAr["y1"]), parseInt(dataAr["x2"]),
+        parseInt(dataAr["y2"]), dataAr["color"]));
+});
+connect.socket.on('lineByPen', (data) => {
+    let dataAr = JSON.parse(data);
+    let pointsArray = dataAr["pointsArray"];
+    let tmpLine = new LineByPen(pointsArray[0], pointsArray[1], dataAr["color"]);
+    for (let i = 2; i < (pointsArray.length - 2); i += 2) {
+        tmpLine.addPoint(pointsArray[i], pointsArray[i + 1]);
+    }
+    shapesArray.push(tmpLine);
+})
+connect.socket.on("text", (data) => {
+    let dataAr = JSON.parse(data);
+    shapesArray.push(new MyText(dataAr["text"], parseInt(dataAr["x"]), parseInt(dataAr["y"]), dataAr["color"]));
+})
+connect.socket.on("image", (data) => {
+    let dataAr = JSON.parse(data);
+    let image = new Image();
+    image.src = "data:image/png;base64," + dataAr["img"];
+    shapesArray.push(new MyImg(image,dataAr["x"],dataAr["y"]));
 })

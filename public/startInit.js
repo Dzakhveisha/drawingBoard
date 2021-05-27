@@ -1,10 +1,12 @@
-let NAME;
+import * as connect from './socketConnection.js';
+import * as drawing from './drawing.js';
 
+let NAME;
 
 document.getElementById("modalForInit").showModal();
 
 window.onunload = () => {
-    ws.send(JSON.stringify({type: "exit", name: NAME, id:id}));
+    connect.socket.emit("exit", JSON.stringify({name: NAME, id: id}));
 }
 
 document.getElementById('getName').onsubmit = function (evt) {
@@ -23,19 +25,15 @@ document.querySelector('#setName').onclick = function () {
         NAME = "anonymous";
     }
     document.getElementById("modalForInit").close();
-    ws.send(JSON.stringify({type: "new", name: NAME}));
+    connect.socket.emit("new", (JSON.stringify({name: NAME})));
 };
 
 document.querySelector('#setText').onclick = function (ev) {
     let text = document.getElementById("textInput").value;
-    let textObj = new MyText(text, textX, textY, curColor);
-    shapesArray.push(textObj);
-    if (!ws) {
-        alert("No WebSocket connection :(");
-    } else {
-        let data = JSON.stringify(textObj);
-        ws.send(data);
-    }
+    let textObj = new drawing.MyText(text, drawing.textX, drawing.textY, drawing.curColor);
+    drawing.shapesArray.push(textObj);
+    let data = JSON.stringify(textObj);
+    connect.socket.emit("text", data);
     document.getElementById("modalForText").close();
 };
 
@@ -44,26 +42,20 @@ document.querySelector('#cancelText').onclick = function () {
 };
 
 
-
-
 document.querySelector('#setImage').onclick = function (e) {
     let file = document.getElementById("imageInput").files[0];
     let img = new Image;
-    let  reader = new FileReader();
+    let reader = new FileReader();
 
-    img.onload = function() {
-        let imgObj = new MyImg(img, imgX,imgY);
-        shapesArray.push(imgObj);
+    img.onload = function () {
+        let imgObj = new drawing.MyImg(img, drawing.imgX, drawing.imgY);
+        drawing.shapesArray.push(imgObj);
     }
     img.src = URL.createObjectURL(file);
 
-    reader.onload = function(event) {
+    reader.onload = function (event) {
         let data = event.target.result.replace("data:" + file.type + ";base64,", '');
-        if (!ws) {
-            alert("No WebSocket connection :(");
-        } else {
-            ws.send(JSON.stringify({type: "image", x: imgX,  y: imgY, img: data}));
-        }
+        connect.socket.emit("image",JSON.stringify({ x: drawing.imgX, y: drawing.imgY, img: data}));
     }
     reader.readAsDataURL(file);
 
